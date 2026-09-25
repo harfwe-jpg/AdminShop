@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventas - {{ session.get('business_name', 'POS') }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="sales-page">
+    <!-- Navegación -->
+    <nav class="navbar">
+        <div class="nav-brand">{{ session.get('business_name', 'POS System') }}</div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}" class="nav-link">📊 Dashboard</a>
+            <a href="{{ url_for('sales') }}" class="nav-link active">🛒 Ventas</a>
+            <a href="{{ url_for('products') }}" class="nav-link">📦 Productos</a>
+            <a href="{{ url_for('log') }}" class="nav-link">📋 Bitácora</a>
+            <a href="{{ url_for('logout') }}" class="nav-link logout">🚪 Salir</a>
+        </div>
+        <button class="mobile-menu-btn">☰</button>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="container sales-container">
+            <!-- Barra de Búsqueda -->
+            <section class="search-section">
+                <div class="search-row">
+                    <input type="text" id="product-search" class="search-input" 
+                           placeholder="Buscar producto por nombre..." autofocus>
+                    <input type="text" id="barcode-search" class="search-input barcode-input" 
+                           placeholder="Buscar por código de barras...">
+                </div>
+                <div id="search-results" class="search-results"></div>
+            </section>
+
+            <!-- Carrito -->
+            <section class="cart-section">
+                <h2>🛒 Carrito de Ventas</h2>
+                <div id="cart-items" class="cart-items">
+                    <p class="empty-cart">El carrito está vacío</p>
+                </div>
+
+                <div class="cart-total">
+                    <span class="total-label">TOTAL:</span>
+                    <span id="cart-total-amount" class="total-amount">$0.00</span>
+                </div>
+            </section>
+
+            <!-- Panel de Pago -->
+            <section class="payment-section">
+                <h2>💳 Método de Pago</h2>
+
+                <div class="payment-methods">
+                    <button class="payment-btn active" data-method="efectivo">💵 Efectivo</button>
+                    <button class="payment-btn" data-method="tarjeta">💳 Tarjeta</button>
+                    <button class="payment-btn" data-method="transferencia">🏦 Transferencia</button>
+                </div>
+
+                <!-- Calculadora de billetes (solo para efectivo) -->
+                <div id="cash-calculator" class="cash-calculator">
+                    <h3>Calculadora</h3>
+                    <div class="bill-buttons">
+                        <button class="bill-btn" data-value="500">$500</button>
+                        <button class="bill-btn" data-value="200">$200</button>
+                        <button class="bill-btn" data-value="100">$100</button>
+                        <button class="bill-btn" data-value="50">$50</button>
+                        <button class="bill-btn" data-value="20">$20</button>
+                    </div>
+                    <div class="cash-input">
+                        <label>Cantidad recibida:</label>
+                        <input type="number" id="cash-received" class="cash-input-field" 
+                               placeholder="$0.00" step="0.01" min="0">
+                    </div>
+                </div>
+
+                <div class="payment-info">
+                    <div class="total-display">
+                        <span class="total-text">TOTAL A COBRAR</span>
+                        <span id="payment-total" class="payment-total">$0.00</span>
+                    </div>
+                    <div id="change-display" class="change-display" style="display: none;">
+                        <span class="change-text">CAMBIO:</span>
+                        <span id="change-amount" class="change-amount">$0.00</span>
+                    </div>
+                </div>
+
+                <button id="complete-sale-btn" class="btn btn-success btn-large btn-block">
+                    ✅ Realizar Venta
+                </button>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal de Venta Realizada -->
+    <div id="sale-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>✅ ¡Venta Realizada!</h2>
+            <div class="sale-summary">
+                <p>Total: <strong id="modal-total">$0.00</strong></p>
+                <p id="modal-change-row" style="display: none;">Cambio: <strong id="modal-change">$0.00</strong></p>
+            </div>
+            <button class="btn btn-primary" onclick="closeSaleModal()">Continuar</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

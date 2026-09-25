@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - {{ session.get('business_name', 'POS') }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="products-page">
+    <!-- Navegación -->
+    <nav class="navbar">
+        <div class="nav-brand">{{ session.get('business_name', 'POS System') }}</div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}" class="nav-link">📊 Dashboard</a>
+            <a href="{{ url_for('sales') }}" class="nav-link">🛒 Ventas</a>
+            <a href="{{ url_for('products') }}" class="nav-link active">📦 Productos</a>
+            <a href="{{ url_for('log') }}" class="nav-link">📋 Bitácora</a>
+            <a href="{{ url_for('logout') }}" class="nav-link logout">🚪 Salir</a>
+        </div>
+        <button class="mobile-menu-btn">☰</button>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Formulario de Producto -->
+            <section class="products-section">
+                <h2 id="form-title">📦 Agregar Producto</h2>
+                <form method="POST" class="product-form" id="product-form">
+                    <input type="hidden" name="product_id" id="product-id">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="barcode">Código de Barras / ID *</label>
+                            <input type="text" id="barcode" name="barcode" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name">Nombre del Producto *</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="product_type">Tipo de Producto</label>
+                            <select id="product_type" name="product_type">
+                                <option value="pieza">Pieza</option>
+                                <option value="kilo">Kilo (Ej: jitomate)</option>
+                                <option value="paquete">Paquete (Ej: arroz, sopa)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="stock">Stock (Piezas) *</label>
+                            <input type="number" id="stock" name="stock" min="0" required>
+                            <small>Solo confirma, no se reduce hasta vender</small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="public_price">Precio Público (Venta) *</label>
+                            <input type="number" id="public_price" name="public_price" 
+                                   step="0.01" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="supplier_price">Precio Proveedor (Costo) *</label>
+                            <input type="number" id="supplier_price" name="supplier_price" 
+                                   step="0.01" min="0" required>
+                            <small id="profit-margin">Margen: --%</small>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="save-btn">Guardar Producto</button>
+                        <button type="button" class="btn btn-secondary" id="cancel-btn" style="display: none;">Cancelar</button>
+                        <button type="button" class="btn btn-success" onclick="createBackup()">💾 Respaldar DB</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Lista de Productos -->
+            <section class="products-section">
+                <h2>📋 Inventario de Productos</h2>
+                <div class="products-table-container">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Precio</th>
+                                <th>Costo</th>
+                                <th>Stock</th>
+                                <th>Margen</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                            <tr data-id="{{ product.id }}">
+                                <td>{{ product.barcode }}</td>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.product_type }}</td>
+                                <td>${{ "%.2f"|format(product.public_price) }}</td>
+                                <td>${{ "%.2f"|format(product.supplier_price) }}</td>
+                                <td>
+                                    <span class="stock-badge {% if product.stock <= 3 %}low{% endif %}">
+                                        {{ product.stock }}
+                                    </span>
+                                </td>
+                                <td>{{ "%.1f"|format(product.get_profit_margin()) }}%</td>
+                                <td class="actions">
+                                    <button class="btn btn-sm" onclick="editProduct({{ product.id }})">✏️</button>
+                                    <form method="POST" style="display: inline;">
+                                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                                        <input type="hidden" name="action" value="delete">
+                                        <button type="submit" class="btn btn-sm btn-danger" 
+                                                onclick="return confirm('¿Eliminar producto?')">🗑️</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="8" class="empty-state">No hay productos registrados</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
