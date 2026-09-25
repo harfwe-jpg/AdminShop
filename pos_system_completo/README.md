@@ -240,9 +240,11 @@ Accede manualmente a:
 ## 📞 Soporte
 
 Para soporte técnico o personalizaciones adicionales, contacta al desarrollador.
+CARLOS ALBERTO SANCHEZ GARCIA 
 
 ---
 
 **Versión**: 1.0.0  
 **Año**: 2026  
 **Desarrollado con**: Flask, SQLAlchemy, HTML5, CSS3, JavaScript
+PUEDE CONTENER ERRORES NO ENGO UN PAPEL QUE ME ABALE COMO PROGRAMADOR TODO ES MIESFUERZO Y PASION POR HACER LA VIDA MAS FACIL 
