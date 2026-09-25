@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activar Licencia - POS System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="activation-page">
+    <div class="container">
+        <div class="card activation-card">
+            <h1>🔐 Activación de Licencia</h1>
+            <p class="subtitle">Ingresa tu clave de activación para comenzar</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="activation-form">
+                <div class="form-group">
+                    <label for="license_key">Clave de Activación</label>
+                    <input type="text" id="license_key" name="license_key" 
+                           placeholder="Ej: MEM-1M-2026-XOXTL-79F4K" required autofocus>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large">Activar</button>
+            </form>
+
+            <div class="license-info">
+                <h3>Tipos de licencia:</h3>
+                <ul>
+                    <li><strong>Prueba (1 mes):</strong> MEM-1M-2026-XOXTL-79F4K</li>
+                    <li><strong>Permanente:</strong> LIFETIME-VIP-2026-XOXTL-99Z8X</li>
+                    <li><strong>Móvil/Tablet:</strong> MOB-TAB-ACC-2026-XOXTL-5D2W9</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

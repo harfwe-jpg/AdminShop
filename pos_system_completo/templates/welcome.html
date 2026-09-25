@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido - POS System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="welcome-page">
+    <div class="container">
+        <div class="card welcome-card">
+            <h1>🎉 ¡Licencia Activada!</h1>
+
+            <div class="license-details">
+                {% if license_type == 'TRIAL' %}
+                    <div class="license-badge trial">PRUEBA GRATUITA</div>
+                    <p class="license-message">
+                        Esta clave es válida únicamente para <strong>este dispositivo</strong> 
+                        y por <strong>1 mes de prueba gratuita</strong>.
+                    </p>
+                    <p class="license-warning">
+                        Después del mes de prueba, deberás realizar el pago total del precio acordado 
+                        e ingresar una nueva clave permanente para continuar usando el sistema.
+                    </p>
+                {% elif license_type == 'LIFETIME' %}
+                    <div class="license-badge lifetime">LICENCIA PERMANENTE</div>
+                    <p class="license-message">
+                        ¡Felicidades! Tu sistema administrativo está <strong>activado de forma permanente</strong>.
+                    </p>
+                    <p class="license-success">
+                        Esta licencia es válida para este dispositivo y no requiere renovación.
+                    </p>
+                {% elif license_type == 'MOBILE' %}
+                    <div class="license-badge mobile">LICENCIA MÓVIL</div>
+                    <p class="license-message">
+                        Licencia activada para <strong>celulares y tablets</strong>.
+                    </p>
+                    <p class="license-info-text">
+                        Puedes registrar hasta <strong>3 dispositivos</strong> por temas de seguridad.
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="next-steps">
+                <h2>Siguientes pasos:</h2>
+                <ol>
+                    <li>Registra tu negocio con el nombre, usuario y contraseña</li>
+                    <li>Inicia sesión con tus credenciales</li>
+                    <li>Configura tu turno inicial</li>
+                    <li>¡Comienza a vender!</li>
+                </ol>
+            </div>
+
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-large">
+                Registrar mi Negocio →
+            </a>
+        </div>
+    </div>
+</body>
+</html>

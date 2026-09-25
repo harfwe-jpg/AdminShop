@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Turno - POS System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="shift-page">
+    <div class="container">
+        <div class="card shift-card">
+            <h1>💼 Iniciar Turno</h1>
+            <p class="business-name">{{ session.get('business_name', '') }}</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="shift-form">
+                <div class="form-group">
+                    <label for="shift_number">Número de Turno</label>
+                    <select id="shift_number" name="shift_number" required>
+                        <option value="1">Turno 1</option>
+                        <option value="2">Turno 2</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="initial_amount">Cantidad Inicial ($) *</label>
+                    <input type="number" id="initial_amount" name="initial_amount" 
+                           placeholder="0.00" step="0.01" min="0" required>
+                    <small>Dinero con el que inicia el turno en caja</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">Iniciar Turno</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

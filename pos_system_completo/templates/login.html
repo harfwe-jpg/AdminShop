@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - POS System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="login-page">
+    <div class="container">
+        <div class="card login-card">
+            <h1>👤 Iniciar Sesión</h1>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="login-form">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" name="username" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" 
+                           maxlength="4" pattern="[0-9]{4}" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">Entrar</button>
+            </form>
+
+            {% if session.get('license_activated') %}
+            <div class="license-status">
+                <span class="badge badge-success">Licencia Activa</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

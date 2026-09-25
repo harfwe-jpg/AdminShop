@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - {{ session.get('business_name', 'POS') }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="dashboard-page">
+    <!-- Navegación -->
+    <nav class="navbar">
+        <div class="nav-brand">{{ session.get('business_name', 'POS System') }}</div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}" class="nav-link active">📊 Dashboard</a>
+            <a href="{{ url_for('sales') }}" class="nav-link">🛒 Ventas</a>
+            <a href="{{ url_for('products') }}" class="nav-link">📦 Productos</a>
+            <a href="{{ url_for('log') }}" class="nav-link">📋 Bitácora</a>
+            <a href="{{ url_for('logout') }}" class="nav-link logout">🚪 Salir</a>
+        </div>
+        <button class="mobile-menu-btn">☰</button>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Resumen del Turno -->
+            <section class="dashboard-section">
+                <h2>Turno {{ session.get('shift_number', '-') }}</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-value">${{ "%.2f"|format(total_sales) }}</div>
+                        <div class="stat-label">Ventas del Turno</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🧾</div>
+                        <div class="stat-value">{{ sales_count }}</div>
+                        <div class="stat-label">Ventas Realizadas</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-value">{{ low_stock|length }}</div>
+                        <div class="stat-label">Productos Bajos</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Alertas de Stock Bajo -->
+            {% if low_stock %}
+            <section class="dashboard-section">
+                <h2>⚠️ Productos con Stock Bajo</h2>
+                <div class="alert alert-warning">
+                    <strong>¡Atención!</strong> Los siguientes productos están por agotarse (3 piezas o menos):
+                </div>
+                <div class="low-stock-list">
+                    {% for product in low_stock %}
+                    <div class="low-stock-item">
+                        <span class="product-name">{{ product.name }}</span>
+                        <span class="product-stock">{{ product.stock }} {{ product.product_type }}(s)</span>
+                        <a href="{{ url_for('products') }}" class="btn btn-sm">Reponer</a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Acciones Rápidas -->
+            <section class="dashboard-section">
+                <h2>Acciones Rápidas</h2>
+                <div class="quick-actions">
+                    <a href="{{ url_for('sales') }}" class="action-card">
+                        <span class="action-icon">🛒</span>
+                        <span class="action-label">Nueva Venta</span>
+                    </a>
+                    <a href="{{ url_for('products') }}" class="action-card">
+                        <span class="action-icon">📦</span>
+                        <span class="action-label">Agregar Producto</span>
+                    </a>
+                    <a href="{{ url_for('log') }}" class="action-card">
+                        <span class="action-icon">📋</span>
+                        <span class="action-label">Ver Bitácora</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Cerrar Turno -->
+            <section class="dashboard-section">
+                <h2>Cerrar Turno</h2>
+                <div class="card close-shift-card">
+                    <p>Ingresa tu contraseña para cerrar el turno actual y generar el reporte PDF.</p>
+                    <form method="POST" action="{{ url_for('shift_close') }}" class="close-shift-form">
+                        <input type="password" name="password" placeholder="Contraseña (4 dígitos)" 
+                               maxlength="4" pattern="[0-9]{4}" required>
+                        <button type="submit" class="btn btn-danger">Cerrar Turno</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

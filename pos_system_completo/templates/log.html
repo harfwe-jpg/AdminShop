@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitácora - {{ session.get('business_name', 'POS') }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="log-page">
+    <!-- Navegación -->
+    <nav class="navbar">
+        <div class="nav-brand">{{ session.get('business_name', 'POS System') }}</div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}" class="nav-link">📊 Dashboard</a>
+            <a href="{{ url_for('sales') }}" class="nav-link">🛒 Ventas</a>
+            <a href="{{ url_for('products') }}" class="nav-link">📦 Productos</a>
+            <a href="{{ url_for('log') }}" class="nav-link active">📋 Bitácora</a>
+            <a href="{{ url_for('logout') }}" class="nav-link logout">🚪 Salir</a>
+        </div>
+        <button class="mobile-menu-btn">☰</button>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="container">
+            <section class="log-section">
+                <h2>📋 Bitácora de Ventas del Día</h2>
+                <p class="log-date">{{ session.get('business_name', '') }} - {{ now().strftime('%d/%m/%Y') if now else '' }}</p>
+
+                {% if sales %}
+                <div class="sales-log">
+                    <table class="log-table">
+                        <thead>
+                            <tr>
+                                <th>Hora</th>
+                                <th>Folio</th>
+                                <th>Turno</th>
+                                <th>Método</th>
+                                <th>Total</th>
+                                <th>Cambio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sale in sales %}
+                            <tr>
+                                <td>{{ sale.sale_time.strftime('%H:%M:%S') }}</td>
+                                <td>#{{ sale.id }}</td>
+                                <td>{{ sale.shift.shift_number }}</td>
+                                <td>
+                                    <span class="payment-badge {{ sale.payment_method }}">
+                                        {{ sale.payment_method|upper }}
+                                    </span>
+                                </td>
+                                <td class="total">${{ "%.2f"|format(sale.total_amount) }}</td>
+                                <td class="change">${{ "%.2f"|format(sale.change) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <div class="log-summary">
+                        <p><strong>Total de ventas:</strong> {{ sales|length }}</p>
+                       <!-- ✔️ Código corregido -->
+<p><strong>Total del día:</strong> ${{ "%.2f" | format(sales | map(attribute='total_amount') | sum) }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <p>No hay ventas registradas hoy</p>
+                </div>
+                {% endif %}
+            </section>
+
+            <!-- Exportar -->
+            <section class="log-section">
+                <h2>Exportar Bitácora</h2>
+                <div class="export-options">
+                    <button class="btn btn-primary" onclick="alert('Funcionalidad de exportar PDF')">📄 Exportar PDF</button>
+                    <button class="btn btn-secondary" onclick="createBackup()">💾 Respaldar DB</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

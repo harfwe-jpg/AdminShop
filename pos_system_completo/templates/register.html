@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Negocio - POS System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="register-page">
+    <div class="container">
+        <div class="card register-card">
+            <h1>🏪 Registrar Negocio</h1>
+            <p class="subtitle">Configura tu negocio para comenzar</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="register-form">
+                <div class="form-group">
+                    <label for="business_name">Nombre del Negocio *</label>
+                    <input type="text" id="business_name" name="business_name" 
+                           placeholder="Ej: Tienda El Sol" required>
+                    <small>Este nombre aparecerá en los reportes de ventas</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="owner_username">Usuario (Nombre del Dueño) *</label>
+                    <input type="text" id="owner_username" name="owner_username" 
+                           placeholder="Ej: Juan" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="owner_password">Contraseña (4 dígitos) *</label>
+                    <input type="password" id="owner_password" name="owner_password" 
+                           placeholder="1234" maxlength="4" pattern="[0-9]{4}" required>
+                    <small>Solo números - 4 dígitos</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">Registrar</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
